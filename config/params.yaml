@@ -3,7 +3,7 @@
 
     # Topics
     pointCloudTopic: "/points"                   # Point cloud data
-    imuTopic: "zed_rear/zed_node/imu/data"       # IMU data
+    imuTopic: "zed_front/zed_node/imu/data"       # IMU data
     odomTopic: "odometry/imu_incremental"        # IMU pre-preintegration odometry, same frequency as IMU
     gpsTopic: "odometry/gpsz"                    # GPS odometry topic from navsat, see module_navsat.launch file
 
