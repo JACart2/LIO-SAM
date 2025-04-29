@@ -153,6 +153,11 @@ public:
     Eigen::Affine3f incrementalOdometryAffineFront;
     Eigen::Affine3f incrementalOdometryAffineBack;
 
+    // Localization Only flags
+    bool        localizationOnly = false;
+    std::string staticMapPath;
+    void        loadStaticMap(); 
+
 
     mapOptimization()
     {
@@ -188,6 +193,11 @@ public:
         downSizeFilterICP.setLeafSize(mappingSurfLeafSize, mappingSurfLeafSize, mappingSurfLeafSize);
         downSizeFilterSurroundingKeyPoses.setLeafSize(surroundingKeyframeDensity, surroundingKeyframeDensity, surroundingKeyframeDensity); // for surrounding key poses of scan-to-map optimization
 
+        // Localization only
+        nh.param("localization_only", localizationOnly, false);
+        nh.param("static_map_path",   staticMapPath,   std::string(""));
+        if (localizationOnly) loadStaticMap();
+        
         allocateMemory();
     }
 
