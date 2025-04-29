@@ -1,8 +1,8 @@
 lio_sam:
   # Our params
   localization_only:  false          # true ➜ freeze the map
-  static_map_path:    ""             # /absolute/path/to/your_map.pcd
-  
+  static_map_path:    "/home/jacart2/dev_ws/src/maps/final_map_condensed_5-22.pcd"             # /absolute/path/to/your_map.pcd
+
   # Topics
   pointCloudTopic: "points_raw"               # Point cloud data
   imuTopic: "imu_raw"                         # IMU data
