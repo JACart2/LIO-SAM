@@ -58,6 +58,9 @@ using namespace std;
 
 typedef pcl::PointXYZI PointType;
 
+extern bool        localizationOnly;       // true  → freeze the map
+extern std::string staticMapPath;          // path to your PCD
+
 enum class SensorType { VELODYNE, OUSTER, LIVOX };
 
 class ParamServer
