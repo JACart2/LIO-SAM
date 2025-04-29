@@ -1768,6 +1768,28 @@ public:
     }
 };
 
+// Localization only method
+void mapOptimization::loadStaticMap()
+{
+    if (staticMapPath.empty()) {
+        ROS_ERROR_STREAM("static_map_path is empty; cannot run localization-only mode.");
+        ros::shutdown();
+    }
+
+    // 1) load the pre-built global cloud
+    pcl::io::loadPCDFile(staticMapPath, *cloudKeyPoses3D);
+
+    // 2) use it as both corner/surf map sources
+    *cloudCornerFromMap += *cloudKeyPoses3D;
+    *cloudSurfFromMap   += *cloudKeyPoses3D;
+
+    // 3) build KD-trees once
+    kdtreeCornerFromMap->setInputCloud(cloudCornerFromMap);
+    kdtreeSurfFromMap  ->setInputCloud(cloudSurfFromMap);
+
+    ROS_INFO_STREAM("\033[1;32mLoaded static map: " << staticMapPath
+                    << "  (" << cloudKeyPoses3D->size() << " pts)\033[0m");
+}
 
 int main(int argc, char** argv)
 {
