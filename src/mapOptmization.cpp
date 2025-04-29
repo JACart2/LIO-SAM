@@ -1390,6 +1390,8 @@ public:
 
     void addOdomFactor()
     {
+        if (localizationOnly) return;
+
         if (cloudKeyPoses3D->points.empty())
         {
             noiseModel::Diagonal::shared_ptr priorNoise = noiseModel::Diagonal::Variances((Vector(6) << 1e-2, 1e-2, M_PI*M_PI, 1e8, 1e8, 1e8).finished()); // rad*rad, meter*meter
@@ -1405,7 +1407,9 @@ public:
     }
 
     void addGPSFactor()
-    {
+    {   
+        if (localizationOnly) return;
+
         if (gpsQueue.empty())
             return;
 
@@ -1486,6 +1490,8 @@ public:
 
     void addLoopFactor()
     {
+        if (localizationOnly) return;
+        
         if (loopIndexQueue.empty())
             return;
 
@@ -1506,6 +1512,8 @@ public:
 
     void saveKeyFramesAndFactor()
     {
+        if (localizationOnly) return;
+
         if (saveFrame() == false)
             return;
 
