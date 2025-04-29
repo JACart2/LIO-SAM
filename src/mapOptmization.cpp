@@ -949,18 +949,38 @@ public:
 
     void extractSurroundingKeyFrames()
     {
-        if (cloudKeyPoses3D->points.empty() == true)
-            return; 
-        
-        // if (loopClosureEnableFlag == true)
-        // {
-        //     extractForLoopClosure();    
-        // } else {
-        //     extractNearby();
-        // }
+        if (cloudKeyPoses3D->empty()) return;
 
-        extractNearby();
+        if (!localizationOnly) {
+            extractNearby();                 // original mapping branch
+            return;
+        }
+
+        // ---- localization-only branch ----
+        pcl::PointXYZI center;
+        center.x = transformTobeMapped[3];
+        center.y = transformTobeMapped[4];
+        center.z = transformTobeMapped[5];
+
+        std::vector<int> ids; std::vector<float> ds;
+        kdtreeCornerFromMap->radiusSearch(center, 50.0, ids, ds);     // 50 m crop
+
+        laserCloudCornerFromMap->clear();
+        laserCloudSurfFromMap  ->clear();
+        for (int idx : ids) {
+            laserCloudCornerFromMap->push_back(cloudCornerFromMap->points[idx]);
+            laserCloudSurfFromMap  ->push_back(cloudSurfFromMap  ->points[idx]);
+        }
+
+        downSizeFilterCorner.setInputCloud(laserCloudCornerFromMap);
+        downSizeFilterCorner.filter(*laserCloudCornerFromMapDS);
+        downSizeFilterSurf.setInputCloud(laserCloudSurfFromMap);
+        downSizeFilterSurf.filter(*laserCloudSurfFromMapDS);
+
+        laserCloudCornerFromMapDSNum = laserCloudCornerFromMapDS->size();
+        laserCloudSurfFromMapDSNum   = laserCloudSurfFromMapDS->size();
     }
+
 
     void downsampleCurrentScan()
     {
@@ -1491,7 +1511,7 @@ public:
     void addLoopFactor()
     {
         if (localizationOnly) return;
-        
+
         if (loopIndexQueue.empty())
             return;
 
