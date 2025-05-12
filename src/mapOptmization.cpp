@@ -157,6 +157,10 @@ public:
         parameters.relinearizeThreshold = 0.1;
         parameters.relinearizeSkip = 1;
         isam = new ISAM2(parameters);
+      
+        std::string map_path;
+        this->get_parameter("static_map_path", map_path);
+        RCLCPP_INFO(this->get_logger(), "static_map_path loaded: %s", map_path.c_str());
 
         pubKeyPoses = create_publisher<sensor_msgs::msg::PointCloud2>("lio_sam/mapping/trajectory", 1);
         pubLaserCloudSurround = create_publisher<sensor_msgs::msg::PointCloud2>("lio_sam/mapping/map_global", 1);
