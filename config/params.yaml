@@ -3,6 +3,7 @@ lio_sam:
     # Our params
     localization_only:  true
     static_map_path: "/dev_ws/src/maps/final_map_condensed_5-22.pcd"
+    loopClosureEnableFlag: true
 
     # Topics
     pointCloudTopic: "/points"
