@@ -157,7 +157,11 @@ public:
         parameters.relinearizeThreshold = 0.1;
         parameters.relinearizeSkip = 1;
         isam = new ISAM2(parameters);
-      
+
+        this->declare_parameter<bool>("localization_only", false);
+        this->declare_parameter<std::string>("static_map_path", "");
+        this->declare_parameter<bool>("loopClosureEnableFlag", true);
+       
         std::string map_path;
         if (this->get_parameter("static_map_path", map_path)) {
             RCLCPP_INFO(this->get_logger(), "🗺️ [LIO-SAM] static_map_path parameter loaded: '%s'", map_path.c_str());
