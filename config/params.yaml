@@ -1,10 +1,5 @@
 lio_sam:
   ros__parameters:
-    # Our params
-    localization_only:  true
-    static_map_path: "/dev_ws/src/maps/final_map_condensed_5-22.pcd"
-    loopClosureEnableFlag: true
-
     # Topics
     pointCloudTopic: "/points"
     imuTopic: "zed_rear/zed_node_1/imu/data"
