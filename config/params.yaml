@@ -96,10 +96,11 @@ lio_sam:
     globalMapVisualizationPoseDensity: 10.0       # meters, global map visualization keyframe density
     globalMapVisualizationLeafSize: 1.0           # meters, global map visualization cloud density
   
-lio_sam_mapOptimization:
+/lio_sam_mapOptimization:
   ros__parameters:
     static_map_path: "/dev_ws/src/maps/final_map_condensed_5-22.pcd"
     localization_only: true
+    loopClosureEnableFlag: true
 
   
 navsat:
