@@ -949,21 +949,72 @@ public:
         if (laserCloudMapContainer.size() > 1000)
             laserCloudMapContainer.clear();
     }
-
+   
     void extractSurroundingKeyFrames()
     {
-        if (cloudKeyPoses3D->points.empty() == true)
-            return; 
-        
-        // if (loopClosureEnableFlag == true)
-        // {
-        //     extractForLoopClosure();    
-        // } else {
-        //     extractNearby();
-        // }
-
+        if (cloudKeyPoses3D->points.empty()) 
+            return;
+    
+        // Check if we're in localization-only mode with a static map
+        bool localization_only = false;
+        std::string static_map_path;
+        this->get_parameter("localization_only", localization_only);
+        this->get_parameter("static_map_path", static_map_path);
+    
+        if (localization_only && !static_map_path.empty()) 
+        {
+            // Load static map only once (check if already loaded)
+            if (laserCloudCornerFromMap->empty()) 
+            {
+                RCLCPP_INFO(get_logger(), "Loading static map from: %s", static_map_path.c_str());
+                
+                pcl::PointCloud<PointType>::Ptr staticMap(new pcl::PointCloud<PointType>());
+                if (pcl::io::loadPCDFile<PointType>(static_map_path, *staticMap) == -1) 
+                {
+                    RCLCPP_ERROR(get_logger(), "Failed to load static map file!");
+                    return;
+                }
+    
+                // Process static map (same as normal map processing)
+                *laserCloudCornerFromMap = *staticMap;
+                *laserCloudSurfFromMap = *staticMap; // Or load separate surf map if available
+    
+                // Downsample
+                downSizeFilterCorner.setInputCloud(laserCloudCornerFromMap);
+                downSizeFilterCorner.filter(*laserCloudCornerFromMapDS);
+                laserCloudCornerFromMapDSNum = laserCloudCornerFromMapDS->size();
+   
+                downSizeFilterSurf.setInputCloud(laserCloudSurfFromMap);
+                downSizeFilterSurf.filter(*laserCloudSurfFromMapDS);
+                laserCloudSurfFromMapDSNum = laserCloudSurfFromMapDS->size();
+   
+                // Build kdtree
+                kdtreeCornerFromMap->setInputCloud(laserCloudCornerFromMapDS);
+                kdtreeSurfFromMap->setInputCloud(laserCloudSurfFromMapDS);
+   
+                RCLCPP_INFO(get_logger(), "Static map loaded with %zu points", staticMap->size());
+            }
+            return; // Skip normal keyframe extraction in localization mode
+        }
+   
+        // Original keyframe extraction logic (for mapping mode)
         extractNearby();
     }
+
+    // void extractSurroundingKeyFrames()
+    // {
+    //     if (cloudKeyPoses3D->points.empty() == true)
+    //         return; 
+        
+    //     // if (loopClosureEnableFlag == true)
+    //     // {
+    //     //     extractForLoopClosure();    
+    //     // } else {
+    //     //     extractNearby();
+    //     // }
+
+    //     extractNearby();
+    // }
 
     void downsampleCurrentScan()
     {
