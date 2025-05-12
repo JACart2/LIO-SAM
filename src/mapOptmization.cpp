@@ -158,8 +158,8 @@ public:
         parameters.relinearizeSkip = 1;
         isam = new ISAM2(parameters);
 
-        this->declare_parameter<bool>("localization_only", false);
-        this->declare_parameter<std::string>("static_map_path", "");
+        this->declare_parameter<bool>("localization_only", true);
+        this->declare_parameter<std::string>("static_map_path", "/dev_ws/src/maps/final_map_condensed_5-22.pcd");
         this->declare_parameter<bool>("loopClosureEnableFlag", true);
        
         std::string map_path;
@@ -956,7 +956,7 @@ public:
             return;
     
         // Check if we're in localization-only mode with a static map
-        bool localization_only = false;
+        bool localization_only = true;
         std::string static_map_path;
         this->get_parameter("localization_only", localization_only);
         this->get_parameter("static_map_path", static_map_path);
