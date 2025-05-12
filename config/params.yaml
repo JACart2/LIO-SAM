@@ -1,8 +1,4 @@
 lio_sam:
-  # Our params
-  localization_only:  true          # true ➜ freeze the map
-  static_map_path:    "/home/jacart2/dev_ws/src/maps/final_map_condensed_5-22.pcd"             # /absolute/path/to/your_map.pcd
-
   # Topics
   pointCloudTopic: "points_raw"               # Point cloud data
   imuTopic: "imu_raw"                         # IMU data
@@ -95,7 +91,9 @@ lio_sam:
   globalMapVisualizationPoseDensity: 10.0       # meters, global map visualization keyframe density
   globalMapVisualizationLeafSize: 1.0           # meters, global map visualization cloud density
 
-
+lio_sam_mapOptimization:
+  localization_only: true
+  static_map_path: "/dev_ws/src/maps/final_map_condensed_5-22.pcd"
 
 
 # Navsat (convert GPS coordinates to Cartesian)
